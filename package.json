@@ -1,0 +1,25 @@
+{
+  "name": "goorca",
+  "version": "0.0.1",
+  "description": "A monte carlo go bot.",
+  "main": "index.js",
+  "scripts": {
+    "pretest": "eslint --ignore-path .gitignore .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Horrz/GoOrca.git"
+  },
+  "author": "Martin Horatschek",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Horrz/GoOrca/issues"
+  },
+  "homepage": "https://github.com/Horrz/GoOrca#readme",
+  "devDependencies": {
+    "eslint": "^5.6.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  }
+}

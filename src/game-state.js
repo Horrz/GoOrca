@@ -6,12 +6,12 @@ class GameState {
   constructor(stones = [], history = []) {
     this.boardsize = 9;
     this.komi = 6.5;
-    this.color = 1; //black is positive, white is negative
+    this.color = 1; // black is positive, white is negative
     this.ko = null;
     this.finished = false;
     this.stones = [];
-    for (let y = 0; y < this.boardsize; y++) {
-       this.stones[y] = y in stones ? [...stones[y]] : Array(this.boardsize).fill(0)
+    for (let y = 0; y < this.boardsize; y += 1) {
+      this.stones[y] = y in stones ? [...stones[y]] : Array(this.boardsize).fill(0);
     }
     this.history = history;
   }
@@ -22,8 +22,8 @@ class GameState {
 
   /** Return the current player’s legal moves from given state. */
   legalMoves() {
-    this.stones.forEach(row => row)
-    return [ new Move('pass') ].concat();
+    this.stones.forEach(row => row);
+    return [new Move('pass')].concat();
   }
 
   /** Advance the given state and return it. */
@@ -34,7 +34,7 @@ class GameState {
     // change active color
     newState.color = -this.color;
     if (!move.isPass) {
-      //check for capture dead stones
+      // check for capture dead stones
       const deadNeighbors = newState.getNeighbors(move.vertex)
         .filter(vertex => newState.get(vertex) === -sign && !newState.hasLiberties(vertex));
 
@@ -65,18 +65,18 @@ class GameState {
   isFinished() {
     const { length } = this.history;
     return (length > 2
-      && this.history[length-1].isPass
-      && this.history[length-2].isPass
-      && this.history[length-3].isPass
-    )
+      && this.history[length - 1].isPass
+      && this.history[length - 2].isPass
+      && this.history[length - 3].isPass
+    );
   }
 
   /** Return the winner of the game. */
   winner() {
     if (this.isFinished()) {
       let sum = -this.komi;
-      for (let y = 0; y < this.boardsize; y++) {
-        for (let x = 0; x < this.boardsize; x++) {
+      for (let y = 0; y < this.boardsize; y += 1) {
+        for (let x = 0; x < this.boardsize; x += 1) {
           sum += this.stones[y][x];
         }
       }

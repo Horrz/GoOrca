@@ -80,19 +80,19 @@ class MonteCarlo {
    * @param {MonteCarloNode} node - The node to simulate from.
    * @return {number} The winner of the terminal game state.
    */
- simulate(node) {
-   let state = node.state;
-   let winner = state.winner();
+  simulate(node) {
+    let state = node.state;
+    let winner = state.winner();
 
-   while (winner === null) {
-     let moves = state.legalMoves();
-     let move = moves[Math.floor(Math.random() * moves.length)];
-     state = state.nextState(move);
-     winner = state.winner();
-   }
+    while (winner === null) {
+      const moves = state.legalMoves();
+      const move = moves[Math.floor(Math.random() * moves.length)];
+      state = state.nextState(move);
+      winner = state.winner();
+    }
 
-   return winner;
- }
+    return winner;
+  }
 
   /**
    * Phase 4: Backpropagation
@@ -101,7 +101,6 @@ class MonteCarlo {
    * @param {number} winner - The winner to propagate.
    */
   backpropagate(node, winner) {
-
     while (node !== null) {
       node.n_plays += 1;
       // Parent's choice

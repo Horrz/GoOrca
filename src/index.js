@@ -6,10 +6,7 @@ const mcts = new MonteCarlo(gameState);
 
 // From initial state, take turns to play game until someone wins
 while (gameState.winner() === null) {
-  console.log(gameState);
   mcts.runSearch(gameState, 1);
   const move = mcts.bestMove(gameState);
-  gameState = state.nextState(move);
+  gameState = gameState.nextState(move);
 }
-
-console.log(state.moves);

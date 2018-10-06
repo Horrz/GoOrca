@@ -9,11 +9,11 @@ class GameState {
     this.color = 1; // black is positive, white is negative
     this.ko = null;
     this.finished = false;
-    this.stones = [];
+    this.stones = stones.slice(0); // aka clone
     for (let y = 0; y < this.boardsize; y += 1) {
       this.stones[y] = y in stones ? [...stones[y]] : Array(this.boardsize).fill(0);
     }
-    this.history = history;
+    this.history = history.slice(0); // aka clone
   }
 
   clone() {

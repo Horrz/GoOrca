@@ -9,7 +9,11 @@ class Move {
   }
 
   hash() {
-    return this.isPass ? 'pass' : `${this.vertex.row.toString()},${this.col.toString()}`;
+    if (this.isPass) {
+      return 'pass';
+    }
+    const [row, col] = this.vertex
+    return `${row.toString()},${col.toString()}`;
   }
 }
 

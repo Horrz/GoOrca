@@ -1,7 +1,7 @@
 /** Class representing a state transition. */
 class Move {
   constructor(x, y) {
-    if (row === 'pass') {
+    if (x === 'pass') {
       this.isPass = true;
     } else {
       this.vertex = [x, y];

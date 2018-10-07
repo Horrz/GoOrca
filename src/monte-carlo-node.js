@@ -74,6 +74,15 @@ class MonteCarloNode {
     }
     return child.node;
   }
+
+  /**
+   * Get the UCB1 value for this node.
+   * @param {number} biasParam - The square of the bias parameter in the UCB1 algorithm, defaults to 2.
+   * @return {number} The UCB1 value of this node.
+   */
+  getUCB1(biasParam) {
+    return (this.n_wins / this.n_plays) + Math.sqrt(biasParam * Math.log(this.parent.n_plays) / this.n_plays);
+  }
 }
 
 module.exports = MonteCarloNode;

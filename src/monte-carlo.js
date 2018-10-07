@@ -2,7 +2,8 @@ const MonteCarloNode = require('./monte-carlo-node.js');
 
 /** Class representing the Monte Carlo search tree. */
 class MonteCarlo {
-  constructor() {
+  constructor(UCB1ExploreParam = 2) {
+    this.UCB1ExploreParam = UCB1ExploreParam;
     this.nodes = new Map(); // map: State.hash() => MonteCarloNode
   }
 

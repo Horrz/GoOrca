@@ -2,7 +2,7 @@ const GameState = require('./game-state.js');
 const MonteCarlo = require('./monte-carlo.js');
 
 let gameState = new GameState();
-const mcts = new MonteCarlo(gameState);
+const mcts = new MonteCarlo();
 
 // From initial state, take turns to play game until someone wins
 while (gameState.winner() === null) {

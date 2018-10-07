@@ -22,8 +22,17 @@ class GameState {
 
   /** Return the current player’s legal moves from given state. */
   legalMoves() {
-    this.stones.forEach(row => row);
-    return [new Move('pass')].concat();
+    const allMoves = [new Move('pass')].concat();
+
+    for (let y = 0; y < this.boardsize; y += 1) {
+      for (let x = 0; x < this.boardsize; x += 1) {
+        if (this.stones[y][x] === 0) {
+          allMoves.push(new Move(x,y));
+        }
+      }
+    }
+    return allMoves;
+
   }
 
   /** Advance the given state and return it. */

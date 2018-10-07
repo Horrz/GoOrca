@@ -32,10 +32,47 @@ class MonteCarlo {
     }
   }
 
-  /** Get the best move from available statistics. */
-  bestPlay(state) {
-    // TODO
-    // return play
+
+  /**
+   * From Get the best move from available statistics.
+   * @param {State} state - The state to get the best play from.
+   * @param {string} policy - The selection policy for the 'best' play.
+   * @return {Play} The best play, according to the given policy.
+   */
+  bestMove(state, policy = 'robust') {
+    this.makeNode(state);
+
+    // If not all children are expanded, not enough information
+    if (this.nodes.get(state.hash()).isFullyExpanded() === false) {
+      throw new Error('Not enough information!');
+    }
+
+    const node = this.nodes.get(state.hash());
+    const allMoves = state.legalMoves();
+    let bestMove;
+
+    if (policy === 'robust') { // Most visits (robust child)
+      let max = -Infinity;
+      for (const move of allMoves) {
+        const childNode = node.childNode(move);
+        if (childNode.n_plays > max) {
+          bestMove = move;
+          max = childNode.n_plays;
+        }
+      }
+    } else if (policy === 'max') { // Highest winrate (max child)
+      let max = -Infinity;
+      for (const move of allMoves) {
+        const childNode = node.childNode(move);
+        const ratio = childNode.n_wins / childNode.n_plays;
+        if (ratio > max) {
+          bestMove = move;
+          max = ratio;
+        }
+      }
+    }
+
+    return bestMove;
   }
 
   /** Phase 1, Selection: Select until not fully expanded OR leaf */

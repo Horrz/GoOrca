@@ -1,10 +1,10 @@
 /** Class representing a state transition. */
 class Move {
-  constructor(row, col) {
+  constructor(x, y) {
     if (row === 'pass') {
       this.isPass = true;
     } else {
-      this.vertex = [row, col];
+      this.vertex = [x, y];
     }
   }
 
@@ -12,8 +12,8 @@ class Move {
     if (this.isPass) {
       return 'pass';
     }
-    const [row, col] = this.vertex
-    return `${row.toString()},${col.toString()}`;
+    const [x, y] = this.vertex
+    return `${x.toString()},${y.toString()}`;
   }
 }
 

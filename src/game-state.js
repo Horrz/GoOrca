@@ -37,7 +37,7 @@ class GameState {
 
   /** Advance the given state and return it. */
   nextState(move) {
-    const newState = this.clone();
+    const newState = this.clone(this.stone, this.history);
     // add move to list
     newState.history.push(move);
     // change active color
@@ -69,6 +69,13 @@ class GameState {
     const [x, y] = vertex;
     const allNeighbors = [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]];
     return allNeighbors.filter(v => this.hasVertex(v));
+  }
+
+  /**
+   * Checks if the coordinates are part of the board
+   */
+  hasVertex([x, y]) {
+    return 0 <= x && x < this.width && 0 <= y && y < this.height
   }
 
   isFinished() {

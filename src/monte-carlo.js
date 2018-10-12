@@ -39,7 +39,7 @@ class MonteCarlo {
    * @param {string} policy - The selection policy for the 'best' play.
    * @return {Play} The best play, according to the given policy.
    */
-  bestMove(state, policy = 'robust') {
+  bestMove(state, policy = 'max') {
     this.makeNode(state);
 
     // If not all children are expanded, not enough information

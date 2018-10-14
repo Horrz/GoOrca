@@ -4,14 +4,14 @@ const Move = require('./move');
 class GameState {
   /** Generate and return the initial game state. */
   constructor(stones = [], history = []) {
-    this.boardsize = 9;
+    this.boardSize = 9;
     this.komi = 6.5;
     this.color = 1; // black is positive, white is negative
     this.ko = null;
     this.finished = false;
     this.stones = stones.slice(0); // aka clone
-    for (let y = 0; y < this.boardsize; y += 1) {
-      this.stones[y] = y in stones ? [...stones[y]] : Array(this.boardsize).fill(0);
+    for (let y = 0; y < this.boardSize; y += 1) {
+      this.stones[y] = y in stones ? [...stones[y]] : Array(this.boardSize).fill(0);
     }
     this.history = history.slice(0); // aka clone
   }
@@ -24,8 +24,8 @@ class GameState {
   legalMoves() {
     const allMoves = [new Move('pass')].concat();
 
-    for (let y = 0; y < this.boardsize; y += 1) {
-      for (let x = 0; x < this.boardsize; x += 1) {
+    for (let y = 0; y < this.boardSize; y += 1) {
+      for (let x = 0; x < this.boardSize; x += 1) {
         if (this.stones[y][x] === 0) {
           allMoves.push(new Move(x,y));
         }
@@ -91,8 +91,8 @@ class GameState {
   winner() {
     if (this.isFinished()) {
       let sum = -this.komi;
-      for (let y = 0; y < this.boardsize; y += 1) {
-        for (let x = 0; x < this.boardsize; x += 1) {
+      for (let y = 0; y < this.boardSize; y += 1) {
+        for (let x = 0; x < this.boardSize; x += 1) {
           sum += this.stones[y][x];
         }
       }

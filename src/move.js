@@ -1,10 +1,11 @@
 /** Class representing a state transition. */
 class Move {
-  constructor(x, y) {
+  constructor(x, y, color) {
     if (x === 'pass') {
       this.isPass = true;
     } else {
       this.vertex = [x, y];
+      this.color = color;
     }
   }
 

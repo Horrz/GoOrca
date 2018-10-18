@@ -45,7 +45,7 @@ class GameState {
     if (!move.isPass) {
       // check for capture dead stones
       const deadNeighbors = newState.getNeighbors(move.vertex)
-        .filter(vertex => newState.get(vertex) === -sign && !newState.hasLiberties(vertex));
+        .filter(vertex => newState.get(vertex) === !newState.hasLiberties(vertex));
 
       for (const vertex of deadNeighbors) {
         if (move.get(vertex) === 0) {

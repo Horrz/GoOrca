@@ -43,27 +43,52 @@ class GameState {
     // change active color
     newState.color = -this.color;
     if (!move.isPass) {
+      newState.set(move.vertex, move.color);
       // check for capture dead stones
       const deadNeighbors = newState.getNeighbors(move.vertex)
-        .filter(vertex => newState.get(vertex) === !newState.hasLiberties(vertex));
+        .filter(vertex =>  !newState.hasLiberties(vertex));
 
       for (const vertex of deadNeighbors) {
-        if (move.get(vertex) === 0) {
+        if (newState.get(vertex) === 0) {
           continue;
         }
-        for (const vertex of newState.getChain(n)) {
+        for (const vertex of newState.getChain(move.vertex)) {
           newState.set(vertex, 0);
         }
       }
-      newState.set(move.vertex, move.color);
     }
     return newState;
   }
 
+/**
+   *  Places or removes a stone on the board with the given coordinates.
+   */
   set([x, y], color) {
     this.stones[y][x] = color;
     return this;
   }
+
+  get([x, y]) {
+    return this.stones[y][x];
+  }
+
+  hasLiberties(vertex, visited = {}) {
+    const sign = this.get(vertex)
+    if (!this.hasVertex(vertex) || sign === 0) {
+      return false;
+    }
+    if (vertex in visited) {
+      return false;
+    }
+    const neighbors = this.getNeighbors(vertex)
+    if (neighbors.some(n => this.get(n) === 0)) {
+      return true;
+    }
+
+    visited[vertex] = true;
+    return neighbors.filter(n => this.get(n) === sign)
+      .some(n => this.hasLiberties(n, visited))
+}
 
   getNeighbors(vertex) {
     const [x, y] = vertex;
@@ -74,8 +99,41 @@ class GameState {
   /**
    * Checks if the coordinates are part of the board
    */
+
   hasVertex([x, y]) {
-    return 0 <= x && x < this.width && 0 <= y && y < this.height
+    return 0 <= x && x < this.boardSize && 0 <= y && y < this.boardSize
+  }
+
+  getConnectedComponent(vertex, func, result = null) {
+    if (func instanceof Array) {
+      let signs = func
+      func = v => signs.includes(this.get(v))
+    } else if (typeof func === 'number') {
+      let sign = func
+      func = v => this.get(v) === sign
+    }
+    if (!this.hasVertex(vertex)) return []
+    if (!result) result = [vertex]
+
+    // Recursive depth-first search
+    for (let v of this.getNeighbors(vertex)) {
+      if (!func(v)) continue
+      if (result.some(w => this.vertexEquals(v, w))) continue
+
+      result.push(v)
+      this.getConnectedComponent(v, func, result)
+    }
+
+    return result;
+  }
+
+  //helper static?
+  vertexEquals([a, b], [c, d]) {
+    return a === c && b === d
+  }
+
+  getChain(vertex) {
+    return this.getConnectedComponent(vertex, this.get(vertex))
   }
 
   isFinished() {

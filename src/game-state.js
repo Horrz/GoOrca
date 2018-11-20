@@ -10,7 +10,7 @@ class GameState {
     this.ko = null;
     this.finished = false;
     this.stones = [];
-    for (let y = 0; y < this.boardSize; y +=1) {
+    for (let y = 0; y < this.boardSize; y += 1) {
       this.stones[y] = y in stones ? [...stones[y].slice(0)] : Array(this.boardSize).fill(0);
     }
     this.history = history.slice(0); // aka clone
@@ -27,12 +27,11 @@ class GameState {
     for (let y = 0; y < this.boardSize; y += 1) {
       for (let x = 0; x < this.boardSize; x += 1) {
         if (this.stones[y][x] === 0) {
-          allMoves.push(new Move(x,y, this.color));
+          allMoves.push(new Move(x, y, this.color));
         }
       }
     }
     return allMoves;
-
   }
 
   /** Advance the given state and return it. */
@@ -46,21 +45,15 @@ class GameState {
       newState.set(move.vertex, move.color);
       // check for capture dead stones
       const deadNeighbors = newState.getNeighbors(move.vertex)
-        .filter(vertex =>  !newState.hasLiberties(vertex));
-
-      for (const vertex of deadNeighbors) {
-        if (newState.get(vertex) === 0) {
-          continue;
-        }
-        for (const vertex of newState.getChain(move.vertex)) {
-          newState.set(vertex, 0);
-        }
-      }
+        .filter(vertex => !newState.hasLiberties(vertex));
+      deadNeighbors
+        .filter(vertex => newState.get(vertex) !== 0)
+        .forEach(vertex => newState.getChain(vertex).forEach(v => newState.set(v, 0)));
     }
     return newState;
   }
 
-/**
+  /**
    *  Places or removes a stone on the board with the given coordinates.
    */
   set([x, y], color) {
@@ -73,22 +66,24 @@ class GameState {
   }
 
   hasLiberties(vertex, visited = {}) {
-    const sign = this.get(vertex)
+    const sign = this.get(vertex);
     if (!this.hasVertex(vertex) || sign === 0) {
       return false;
     }
     if (vertex in visited) {
       return false;
     }
-    const neighbors = this.getNeighbors(vertex)
+    const neighbors = this.getNeighbors(vertex);
     if (neighbors.some(n => this.get(n) === 0)) {
       return true;
     }
 
-    visited[vertex] = true;
-    return neighbors.filter(n => this.get(n) === sign)
-      .some(n => this.hasLiberties(n, visited))
-}
+    const newlyVisited = Object.assign({}, visited);
+    newlyVisited[vertex] = true;
+    return neighbors
+      .filter(n => this.get(n) === sign)
+      .some(n => this.hasLiberties(n, newlyVisited));
+  }
 
   getNeighbors(vertex) {
     const [x, y] = vertex;
@@ -99,41 +94,42 @@ class GameState {
   /**
    * Checks if the coordinates are part of the board
    */
-
   hasVertex([x, y]) {
-    return 0 <= x && x < this.boardSize && 0 <= y && y < this.boardSize
+    return this.boardSize > x && x >= 0 && this.boardSize > y && y >= 0;
   }
 
   getConnectedComponent(vertex, func, result = null) {
     if (func instanceof Array) {
-      let signs = func
-      func = v => signs.includes(this.get(v))
+      const signs = func;
+      func = v => signs.includes(this.get(v));
     } else if (typeof func === 'number') {
-      let sign = func
-      func = v => this.get(v) === sign
+      const sign = func;
+      func = v => this.get(v) === sign;
     }
-    if (!this.hasVertex(vertex)) return []
-    if (!result) result = [vertex]
+    if (!this.hasVertex(vertex)) {
+      return [];
+    }
+    if (!result) {
+      result = [vertex];
+    }
 
     // Recursive depth-first search
-    for (let v of this.getNeighbors(vertex)) {
-      if (!func(v)) continue
-      if (result.some(w => this.vertexEquals(v, w))) continue
-
-      result.push(v)
-      this.getConnectedComponent(v, func, result)
-    }
+    this.getNeighbors(vertex).forEach((v) => {
+      if (func(v) && !(result.some(w => GameState.vertexEquals(v, w)))) {
+        result.push(v);
+        this.getConnectedComponent(v, func, result);
+      }
+    });
 
     return result;
   }
 
-  //helper static?
-  vertexEquals([a, b], [c, d]) {
-    return a === c && b === d
+  static vertexEquals([a, b], [c, d]) {
+    return a === c && b === d;
   }
 
   getChain(vertex) {
-    return this.getConnectedComponent(vertex, this.get(vertex))
+    return this.getConnectedComponent(vertex, this.get(vertex));
   }
 
   isFinished() {

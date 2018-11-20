@@ -10,21 +10,17 @@ class MonteCarloNode {
     // Tree stuff
     this.parent = parent;
     this.children = new Map();
-    for (const move of unexpandedPlays) {
-      this.children.set(move.hash(), { move, node: null });
-    }
+    unexpandedPlays.forEach(nextMove => this.children.set(nextMove.hash(), { move: nextMove, node: null }));
   }
+
   /**
    * Whether this node is fully expanded.
    * @return {boolean} Whether this node is fully expanded.
    */
   isFullyExpanded() {
-    for (const child of this.children.values()) {
-      if (child.node === null) {
-        return false;
-      }
-    }
-    return true;
+    return Array.from(this.children.values())
+      .filter(a => a === null)
+      .length > 0;
   }
 
   /**
@@ -33,11 +29,9 @@ class MonteCarloNode {
    */
   unexpandedMoves() {
     const ret = [];
-    for (const child of this.children.values()) {
-      if (child.node === null) {
-        ret.push(child.move);
-      }
-    }
+    Array.from(this.children.values())
+      .filter(child => child.node === null)
+      .forEach(child => ret.push(child.move));
     return ret;
   }
 
@@ -68,8 +62,7 @@ class MonteCarloNode {
     const child = this.children.get(play.hash());
     if (child === undefined) {
       throw new Error('No such move!');
-    }
-    else if (child.node === null) {
+    } else if (child.node === null) {
       throw new Error('Child is not expanded!');
     }
     return child.node;

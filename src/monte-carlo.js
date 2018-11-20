@@ -53,23 +53,23 @@ class MonteCarlo {
 
     if (policy === 'robust') { // Most visits (robust child)
       let max = -Infinity;
-      for (const move of allMoves) {
+      allMoves.forEach((move) => {
         const childNode = node.childNode(move);
         if (childNode.n_plays > max) {
           bestMove = move;
           max = childNode.n_plays;
         }
-      }
+      });
     } else if (policy === 'max') { // Highest winrate (max child)
       let max = -Infinity;
-      for (const move of allMoves) {
+      allMoves.forEach((move) => {
         const childNode = node.childNode(move);
         const ratio = childNode.n_wins / childNode.n_plays;
         if (ratio > max) {
           bestMove = move;
           max = ratio;
         }
-      }
+      });
     }
 
     return bestMove;

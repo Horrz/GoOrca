@@ -13,7 +13,7 @@ class Move {
     if (this.isPass) {
       return 'pass';
     }
-    const [x, y] = this.vertex
+    const [x, y] = this.vertex;
     return `${x.toString()},${y.toString()}`;
   }
 }
